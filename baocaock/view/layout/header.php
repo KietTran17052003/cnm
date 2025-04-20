@@ -37,12 +37,20 @@
                             </div>
                             <div class="navbar magic-shadow">
                                 <div class="container flex justify-center">
-                                    <a href="#" class="active">TRANG CHỦ</a>
+                                    <a href="index.php?page=home" class="active">TRANG CHỦ</a>
                                     <a href="#">GIỚI THIỆU</a>
                                     <a href="#">THỰC ĐƠN</a>
                                     <a href="#">ĐẶT BÀN</a>
                                     <a href="#"><i class="fas fa-cart-plus"></i></a>
-                                    <a href="#">ĐĂNG NHẬP</a>
+                                    <?php
+                                        if (isset($_SESSION["dangnhap"]) && $_SESSION["dangnhap"]) {
+                                            echo '<a href="index.php?page=quanly">QUẢN LÝ <i class="fas fa-store"></i></a> ';
+                                            echo '<span style="margin: auto;">Xin chào, ' . $_SESSION["dangnhap"]["hoten"] . '!</span>';  
+                                            echo '<a href="index.php?page=dangxuat"><i ></i> ĐĂNG XUẤT</a>';
+                                        } else {
+                                            echo '<a href="index.php?page=dangnhap"><i ></i> ĐĂNG NHẬP</a>';
+                                        }
+                                    ?>
                                     <a href=""><i class="fas fa-user-alt"></i></a>
                                 </div>
                             </div>
