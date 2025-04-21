@@ -3,6 +3,7 @@
     //error_reporting(1);
     session_start();
     include_once("model/ketnoi.php");
+    
     require __DIR__ . '/../../layout/header.php';
     
     if(isset($_GET["page"])){

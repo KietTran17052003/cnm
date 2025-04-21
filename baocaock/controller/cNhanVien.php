@@ -1,6 +1,6 @@
 <?php 
 
-    include_once("D:/wamp/www/cnm-main/baocaock/model/mNhanVien.php");
+    include_once("../../model/mNhanVien.php");
 
 
     class CNhanVien{

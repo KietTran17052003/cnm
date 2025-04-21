@@ -58,7 +58,7 @@
   <a href="index.php?page=quanly/quanlynhanvien"><i class="fas fa-users"></i> Quản lý nhân viên</a>
   
   <a href="index.php?page=quanly/quanlykhachhang"><i class="fas fa-user-tag"></i> Quản lý khách hàng</a>
-  <a href="#"><i class="fas fa-hamburger"></i> Quản lý món ăn</a>
+  <a href="index.php?page=quanly/quanlymonan"><i class="fas fa-hamburger"></i> Quản lý món ăn</a>
   <a href="#"><i class="fas fa-chair"></i> Quản lý bàn</a>
   <a href="#"><i class="fas fa-receipt"></i> Quản lý đơn hàng</a>
   <a href="#"><i class="fas fa-chart-line"></i> Thống kê</a>

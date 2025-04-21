@@ -19,27 +19,39 @@
                         <a href=""><i class="fab fa-facebook-f"></i></a>
                         <a href=""><i class="fab fa-instagram"></i></a>
                         <a href=""><i class="fab fa-twitter"></i></a>
+                        <?php
+                                        if (isset($_SESSION["dangnhap"]) && $_SESSION["dangnhap"]) {
+                                            // echo '<a href="index.php?page=quanly">QUẢN LÝ <i class="fas fa-store"></i></a> ';
+                                            // echo '<span style="margin: auto;">Xin chào, ' . $_SESSION["dangnhap"]["hoten"] . '!</span>';  
+                                            echo '<a href="index.php?page=dangxuat"><i ></i> ĐĂNG XUẤT</a>';
+                                        } else {
+                                            echo '<a href="index.php?page=dangnhap"><i ></i> ĐĂNG NHẬP</a>';
+                                        }   
+                        ?>
                     </div>
                     <div>
                         <h5>Working Hours: Mon - Sat (9.00 am - 22.00 pm)</h5>    
                     </div>    
                 </div>
             </header>
-            <nav>
-                <div class="top">
-                    <div class="container flex justify-between">
-                        <div>
-                            <img src="../../img/logo2.png" alt="" style="width:120px;">
-                        </div>
-                        <div class="navbar magic-shadow">
-                            <div class="container flex justify-center">
-                                <a href="index.php?page=home" class="active">TRANG CHỦ</a>
-                                <a href="#">GIỚI THIỆU</a>
-                                <a href="#">THỰC ĐƠN</a>
-                                <a href="#">ĐẶT BÀN</a>
-                                <a href="#"><i class="fas fa-cart-plus"></i></a>                                  
-                                <a href=""><i class="fas fa-user-alt"></i></a>
-                                    <?php
+            <?php
+            $role = $_SESSION["dangnhap"]["id_role"];
+            if($role == null || $role ==4  ){
+                echo ' 
+                        <nav>
+                            <div class="top">
+                                <div class="container flex justify-between">
+                                    <div>
+                                        <img src="../../img/logo2.png" alt="" style="width:120px;">
+                                    </div>
+                                    <div class="navbar magic-shadow">
+                                        <div class="container flex justify-center">
+                                            <a href="index.php?page=home" class="active">TRANG CHỦ</a>
+                                            <a href="#">GIỚI THIỆU</a>
+                                            <a href="#">THỰC ĐƠN</a>
+                                            <a href="#">ĐẶT BÀN</a>
+                                            <a href="#"><i class="fas fa-cart-plus"></i></a>                                  
+                                            <a href=""><i class="fas fa-user-alt"></i></a>';
                                         if (isset($_SESSION["dangnhap"]) && $_SESSION["dangnhap"]) {
                                             // echo '<a href="index.php?page=quanly">QUẢN LÝ <i class="fas fa-store"></i></a> ';
                                             // echo '<span style="margin: auto;">Xin chào, ' . $_SESSION["dangnhap"]["hoten"] . '!</span>';  
@@ -47,13 +59,15 @@
                                         } else {
                                             echo '<a href="index.php?page=dangnhap"><i ></i> ĐĂNG NHẬP</a>';
                                         }
-                                    ?>
-                            </div>
-                        </div>
-                    </div>
-                </div>    
-            </nav>
-                
+                echo "                  
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>    
+                        </nav>";
+            }
+           ?>
+
 </body>
 
 </html>
