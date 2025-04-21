@@ -3,13 +3,9 @@
         public function connect(){
             return mysqli_connect("localhost","root","", "savoriarestaurant");
         }
-        public function dongKetNoi($con){
+        public function dongketnoi($con){
             $con->close();
-        }
-        
+        }        
     }
-
-
-
 
 ?>
