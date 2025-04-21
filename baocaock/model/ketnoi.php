@@ -5,7 +5,9 @@
         }
         public function dongketnoi($con){
             $con->close();
-        }        
+        }
+        
     }
+
 
 ?>

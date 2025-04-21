@@ -18,10 +18,12 @@ class CNguoiDung {
     }
 
     public function dangnhaptaikhoan($email, $password) {
-        $password = md5($password);
+        $password = md5($password); // vì trong DB đang lưu dưới dạng md5
         $p = new MNguoiDung();
         $result = $p->dangnhap($email, $password);
-        return $result;        
+        return $result;
+
+        
     }
 }
 ?>

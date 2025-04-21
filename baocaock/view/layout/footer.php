@@ -29,8 +29,7 @@
                     <ul>
                         <li><i class="fas fa-map-marker-alt"></i>  12 Nguyễn Văn Bảo, Gò Vấp, TP. Hồ Chí Minh</li>
                         <li><i class="fas fa-phone-alt"></i>  0987654321</li>
-                        <li><i class="fas fa-envelope"></i>  savoria@gmail.com</li>
-                        
+                        <li><i class="fas fa-envelope"></i>  savoria@gmail.com</li>                        
                         <li><i class="fab fa-facebook-f"><a href=""> www.facebook.com</a></i></li>
                     </ul>
                 </div>

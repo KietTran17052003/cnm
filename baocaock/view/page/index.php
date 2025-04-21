@@ -1,5 +1,3 @@
-
-
 <?php
     ob_start();
     //error_reporting(1);
@@ -23,6 +21,10 @@
     require __DIR__ . '/../../layout/footer.php';
     ob_end_flush();
 ?>
+
+
+
+
 <?php
 
 

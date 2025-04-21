@@ -19,6 +19,7 @@
 body{
     -webkit-font-smoothing:antialiased;
     font-family: 'Trebuchet MS', sans-serif;
+    
 }
 .container {
     width:100%;
@@ -249,10 +250,10 @@ footer .box ul li a{
     color:#FEFEFE;
     text-decoration: none;
     transition: all .3s ease;
-    -webkit-transition: all .3s ease;
+    /* -webkit-transition: all .3s ease;
     -moz-transition: all .3s ease;
     -ms-transition: all .3s ease;
-    -o-transition: all .3s ease;
+    -o-transition: all .3s ease; */
 }
 footer .box ul li a:hover{
     color:#EEBF00;
