@@ -1,5 +1,5 @@
 <?php
-include_once("../../model/nguoidung.php");
+include_once("../../model/mnguoidung.php");
 
 class CNguoiDung {
     public function getAllND() {
@@ -17,18 +17,11 @@ class CNguoiDung {
         }
     }
 
-    public function dangnhaptaikhoan($username, $password) {
-        //$password = md5($password); 
+    public function dangnhaptaikhoan($email, $password) {
+        $password = md5($password); // vì trong DB đang lưu dưới dạng md5
         $p = new MNguoiDung();
-   
-        $result = $p->dangnhap($username, $password);
-        if ($result) {
-            $_SESSION["dangnhap"] = $result;
-            header("Location: ../index.php?page=home");
-
-        } else {
-            return 0;
-        }
+        $result = $p->dangnhap($email, $password);
+        return $result;        
     }
 }
 ?>
