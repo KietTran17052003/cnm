@@ -1,14 +1,17 @@
 <?php
-    class ketnoi{
-        public function connect(){
-            mysql_query("set names utf8");
-            return mysqli_connect("localhost","root","", "savoriarestaurant");
+class ketnoi {
+    public function connect() {
+        $con = mysqli_connect("localhost", "root", "", "savoriarestaurant");
+        if (!$con) {
+            die("Kết nối thất bại: " . mysqli_connect_error());
         }
-        public function dongketnoi($con){
-            $con->close();
-        }
-        
+        $con->set_charset("utf8");
+
+        return $con;
     }
 
-
+    public function dongketnoi($con) {
+        $con->close();
+    }
+}
 ?>

@@ -198,7 +198,7 @@ td a:hover {
                         <td>{$r['idmonan']}</td>
                         <td>{$r['tenmonan']}</td>
                         <td>{$r['giaban']}</td>
-                        <td>{$r['hinhanh']}</td>
+                        <td><img src='../../img/".$r["hinhanh"]."' width='100' height='150'></td>
                         <td>" . (isset($loaimonan[$r['idloaimonan']]) ? $loaimonan[$r['idloaimonan']] : 'Không xác định') . "</td>
                         <td>{$r['mota']}</td>
                         <td><span class='{$statusClass}'>{$statusText}</span></td>
