@@ -16,34 +16,35 @@ class MNguoiDung {
         }
     } 
 
-    public function dangnhap($tenTK, $password) {
+    public function dangnhap($email, $password) {
         $p = new ketnoi();
         $con = $p->connect();
-    
+
         if ($con) {
-            $stmt = $con->prepare("SELECT id_user,hoten,gioitinh,email,sdt,id_role,trangthai
-                       FROM nguoidung
-                       WHERE email = ? AND password = ?");
+            $stmt = $con->prepare("SELECT id_user, hoten, gioitinh, email, sdt, id_role, trangthai 
+                                   FROM nguoidung 
+                                   WHERE email = ? AND password = ?");
             if (!$stmt) {
-                die("Lỗi prepare: " . $con->error);  // Hiển thị lỗi cụ thể
+                die("Lỗi prepare: " . $con->error);
             }
 
-            $stmt->bind_param("ss", $tenTK, $password);
+            $stmt->bind_param("ss", $email, $password);
             $stmt->execute();
-    
-            // Gắn kết các cột kết quả vào biến
-            $stmt->bind_result($id_user, $hoten,$gioitinh,$email,$sdt,$id_role,$trangthai);
-    
+            $stmt->bind_result($uid, $hoten, $gioitinh, $emailResult, $sdt, $id_role, $trangthai);
+
             if ($stmt->fetch()) {
-                $_SESSION["dangnhap"] = array(
-                    "id_user" => $id_user,
-                    "hoten" => $hoten,
-                    "id_role" => $id_role
-                );
-    
                 $stmt->close();
                 $p->dongKetNoi($con);
-                return $_SESSION["dangnhap"];
+
+                return array(
+                    "id_user" => $uid,
+                    "hoten" => $hoten,
+                    "gioitinh" => $gioitinh,
+                    "email" => $emailResult,
+                    "sdt" => $sdt,
+                    "id_role" => $id_role,
+                    "trangthai" => $trangthai
+                );
             } else {
                 $stmt->close();
                 $p->dongKetNoi($con);
@@ -53,8 +54,5 @@ class MNguoiDung {
             return false;
         }
     }
-    
-    
-    
 }
 ?>
