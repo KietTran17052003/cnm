@@ -1,5 +1,8 @@
 <?php
 session_start();
+include_once("../../controller/cVaiTro.php");
+$p = new CVaiTro();
+//include_once("xuly.php");
 if (!isset($_SESSION["dangnhap"])) {
     header("Location: ../../index.php?page=dangnhap");
     exit();
@@ -153,7 +156,7 @@ button a:hover {
             name="name" required
             onblur="validateField(this, 'Họ và tên không được để trống.', value => value.length > 0)"
           />
-          <span class="error-message"></span>
+          <div class="error-message"></div>
         </div>
       </div>
       
@@ -182,11 +185,21 @@ button a:hover {
       <div class="form-group row py-2">
         <label for="" class="col-sm-2 col-form-label">Chức vụ</label>
         <div class="col-sm-5">
-          <select name="idchucvu" class="form-control" required onblur="validateField(this, 'Vui lòng chọn chức vụ.', value => value !== '')">
-              <option value="">- Chọn chức vụ -</option>
-                            
-          </select>
-          <span class="error-message"></span>
+        <select name="idchucvu" class="form-control" required onblur="validateField(this, 'Vui lòng chọn chức vụ.', value => value !== '')">
+    <option value="">- Chọn chức vụ -</option>
+      <?php
+        $dsVaiTro = $obj->getVaiTroForNhanVien();
+        if ($dsVaiTro && $dsVaiTro !== -1 && $dsVaiTro !== 0){
+          while($r = mysqli_fetch_array($dsVaiTro)){
+            echo "<option value='{$r['id_role']}'>{$r['tenvaitro']}</option>";
+          }
+        }else{
+          echo '<option value="">Không có dữ liệu</option>';
+        }
+      ?>
+</select>
+
+          <div class="error-message"></div>
         </div>
       </div>
 
@@ -202,7 +215,7 @@ button a:hover {
             required
             onblur="validateField(this, 'Email không được để trống.', value => value.length > 0)"
           />
-          <span class="error-message"></span>
+          <div class="error-message"></div>
         </div>
       </div>
 
@@ -218,7 +231,7 @@ button a:hover {
             required
             onblur="validateField(this, 'Số điện thoại không được để trống.', value => value.length > 0)"
           />
-          <span class="error-message"></span>
+          <div class="error-message"></div>
         </div>
       </div>
 
@@ -228,10 +241,9 @@ button a:hover {
           <select id="status" class="form-control" name="trangthai" required>
           <option value="">- Chọn trạng thái -</option>
             <option>Đang làm việc</option>
-            <option>Thử việc</option>
             <option>Nghỉ việc</option>
           </select>
-          <span class="error-message"></span>
+          <div class="error-message"></div>
         </div>
       </div>
 
@@ -247,7 +259,7 @@ button a:hover {
             required
             onblur="validateField(this, 'Mật khẩu không được để trống.', value => value.length > 0)"
           />
-          <span class="error-message"></span>
+          <div class="error-message"></div>
         </div>
       </div>
 
@@ -267,7 +279,153 @@ button a:hover {
     </div>
     
 </div>
-
-
 </body>
 </html>
+
+<script>
+  function validateField(field, message, validator) {
+    const errorSpan = field.nextElementSibling;
+    if (!validator(field.value.trim())) {
+      errorSpan.textContent = message;
+      field.classList.add("is-invalid"); // Thêm class để làm nổi bật lỗi
+    } else {
+      errorSpan.textContent = "";
+      field.classList.remove("is-invalid");
+    }
+  }
+
+  function validateForm(){
+    // Kiểm tra lại toàn bộ form trước khi gửi
+    const name = document.getElementById("name");
+    const phone = document.getElementById("phone");
+    const email = document.getElementsByName("email")[0];
+    const password = document.getElementsByName("password")[0];
+    const status = document.getElementById("status");
+    const chucvu = document.getElementsByName("idchucvu")[0];
+
+    let isValid = true;
+
+    // Kiểm tra trường nhập liệu
+    validateField(name, "Họ và tên không được để trống.", value => value.length > 0);
+    validateField(address, "Địa chỉ không được để trống.", value => value.length > 0);
+    validateField(password, "Mật khẩu không được để trống.", value => value.length > 0);
+    validateField(chucvu, "Vui lòng chọn chức vụ.", value => value !== "");
+    validateField(status, "Vui lòng chọn trạng thái.", value => value !== "");
+
+
+    function validateName(name) {
+    const nameRegex = /^[a-zA-ZÀ-ỹ\s]+$/; // Cho phép ký tự alphabet (bao gồm có dấu) và dấu cách
+    if (name.trim() === "") {
+        return { valid: false, message: "Họ và tên không được để trống." };
+    }
+    if (!nameRegex.test(name)) {
+        return { valid: false, message: "Họ và tên chỉ được chứa ký tự chữ cái và dấu cách." };
+    }
+    return { valid: true, message: "" };
+    }
+
+    function validatePhoneNumber(phoneNumber) {
+  // Kiểm tra số bắt đầu bằng mã vùng hợp lệ ở Việt Nam và có 10 chữ số
+  const phoneRegex = /^(03|05|07|08|09)\d{8}$/; 
+  if (phoneNumber.trim() === "") {
+    return { valid: false, message: "Số điện thoại không được để trống." };
+  }
+  if (!phoneRegex.test(phoneNumber)) {
+    return { 
+      valid: false, 
+      message: "Số điện thoại không hợp lệ. Số điện thoại phải gồm 10 chữ số và bắt đầu là 03, 05, 07, 08, 09." 
+    };
+  }
+  return { valid: true, message: "" };
+}
+
+
+    function validateEmail(email) {
+      const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/; // Định dạng email chuẩn
+      if (email.trim() === "") {
+        return { valid: false, message: "Email không được để trống." };
+      }
+      if (!emailRegex.test(email)) {
+        return { valid: false, message: "Email không hợp lệ. Email có định dạng là abc@xxx.yy" };
+      }
+      return { valid: true, message: "" };
+    }
+
+    // Kiểm tra họ tên
+    const nameValidation = validateName(name.value);
+    if (!nameValidation.valid) {
+        const nameError = name.nextElementSibling;
+        nameError.textContent = nameValidation.message;
+        name.classList.add("is-invalid");
+        isValid = false;
+    } else {
+        name.nextElementSibling.textContent = "";
+        name.classList.remove("is-invalid");
+    }
+
+    // Kiểm tra số điện thoại
+    const phoneValidation = validatePhoneNumber(phone.value);
+      if (!phoneValidation.valid) {
+        const phoneError = phone.nextElementSibling;
+        phoneError.textContent = phoneValidation.message;
+        phone.classList.add("is-invalid");
+        isValid = false;
+      } else {
+        phone.nextElementSibling.textContent = "";
+        phone.classList.remove("is-invalid");
+      }
+
+    // Kiểm tra email
+    const emailValidation = validateEmail(email.value);
+    if (!emailValidation.valid) {
+      const emailError = email.nextElementSibling;
+      emailError.textContent = emailValidation.message;
+      email.classList.add("is-invalid");
+      isValid = false;
+    } else {
+      email.nextElementSibling.textContent = "";
+      email.classList.remove("is-invalid");
+    }
+
+    // Kiểm tra mật khẩu
+    const passwordValidation = validatepassword(password.value);
+    if (!passwordValidation.valid) {
+      const passwordError = password.nextElementSibling;
+      passwordError.textContent = passwordValidation.message;
+      password.classList.add("is-invalid");
+      isValid = false;
+    } else {
+      password.nextElementSibling.textContent = "";
+      password.classList.remove("is-invalid");
+    }
+
+    // Kiểm tra các trường select
+    if (status.value === "") {
+      const statusError = status.nextElementSibling;
+      statusError.textContent = "Vui lòng chọn trạng thái.";
+      status.classList.add("is-invalid");
+      isValid = false;
+    } else {
+      status.nextElementSibling.textContent = "";
+      status.classList.remove("is-invalid");
+    }
+
+    if (chucvu.value === "") {
+      const chucvuError = chucvu.nextElementSibling;
+      chucvuError.textContent = "Vui lòng chọn chức vụ.";
+      chucvu.classList.add("is-invalid");
+      isValid = false;
+    } else {
+      chucvu.nextElementSibling.textContent = "";
+      chucvu.classList.remove("is-invalid");
+    }
+
+    // If the form is valid, show the confirmation prompt
+    if (isValid) {
+      return confirm("Bạn có chắc chắn muốn thêm nhân viên này không?");
+        
+    }
+    return false; // If the form is invalid, prevent submission
+
+  }
+</script>
