@@ -4,6 +4,7 @@ if (!isset($_SESSION["dangnhap"])) {
     header("Location: ../../index.php?page=dangnhap");
     exit();
 }
+include_once("themmonan/xuly.php");
 ?>
 
 <!DOCTYPE html>
@@ -129,7 +130,7 @@ td a:hover {
     <div class="content">
         <h2 class="d-flex justify-content-center style='color: #333;'">QUẢN LÝ MÓN ĂN</h2>
         <div style= "display: flex; justify-content: center;align-items: center;">
-            <button style="background-color: rgb(57, 69, 85);border-radius: 10px; width: 150px; height: 30px;"><a href="index.php?page=quanly/quanlynhanvien/themnhanvien" class="d-flex justify-content-center" style="color: white;">Thêm món ăn</a></button>      
+            <button style="background-color: rgb(57, 69, 85);border-radius: 10px; width: 150px; height: 30px;"><a href="index.php?page=quanly/quanlymonan/themmonan" class="d-flex justify-content-center" style="color: white;">Thêm món ăn</a></button>      
         </div>
         <!-- search -->
         <div class="search-container">

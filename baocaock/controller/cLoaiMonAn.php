@@ -1,5 +1,5 @@
 <?php
-include_once("model/mLoaiMonAn.php");
+include_once("../../model/mLoaiMonAn.php");
 
 class CLoaiMonAN {
     public function getAllLoaiMonAn() {
