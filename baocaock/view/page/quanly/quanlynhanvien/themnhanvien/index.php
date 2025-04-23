@@ -187,16 +187,17 @@ button a:hover {
         <div class="col-sm-5">
         <select name="idchucvu" class="form-control" required onblur="validateField(this, 'Vui lòng chọn chức vụ.', value => value !== '')">
     <option value="">- Chọn chức vụ -</option>
-      <?php
-        $dsVaiTro = $obj->getVaiTroForNhanVien();
-        if ($dsVaiTro && $dsVaiTro !== -1 && $dsVaiTro !== 0){
-          while($r = mysqli_fetch_array($dsVaiTro)){
+    <?php
+    // Lấy danh sách vai trò từ cơ sở dữ liệu
+    $dsVaiTro = $p->getVaiTroForNhanVien(); // Sử dụng đúng đối tượng $p
+    if ($dsVaiTro && mysqli_num_rows($dsVaiTro) > 0) { // Kiểm tra nếu có dữ liệu
+        while ($r = mysqli_fetch_array($dsVaiTro)) {
             echo "<option value='{$r['id_role']}'>{$r['tenvaitro']}</option>";
-          }
-        }else{
-          echo '<option value="">Không có dữ liệu</option>';
         }
-      ?>
+    } else {
+        echo '<option value="">Không có dữ liệu</option>';
+    }
+    ?>
 </select>
 
           <div class="error-message"></div>
