@@ -27,12 +27,26 @@ class MMonAn {
         $stmt = $con->prepare($str);
         $stmt->bind_param("i", $id); // Sử dụng prepared statement để bảo vệ khỏi SQL Injection
         $stmt->execute();
-        $result = $stmt->get_result();
-        $p->dongKetNoi($con);
 
-        if ($result->num_rows > 0) {
-            return $result->fetch_assoc(); // Trả về 1 dòng kết quả
+        // Thay thế get_result() bằng bind_result()
+        $stmt->bind_result($idmonan, $tenmonan, $mota,$giaban, $hinhanh, $trangthai,$idloaimonan);
+        if ($stmt->fetch()) {
+            // Trả về dữ liệu dưới dạng mảng kết hợp
+            $result = array(
+                'idmonan' => $idmonan,
+                'tenmonan' => $tenmonan,
+                'idloaimonan' => $idloaimonan,
+                'giaban' => $giaban,
+                'mota' => $mota,
+                'trangthai' => $trangthai,
+                'hinhanh' => $hinhanh
+         );
+            $stmt->close();
+            $p->dongKetNoi($con);
+            return $result;
         } else {
+            $stmt->close();
+            $p->dongKetNoi($con);
             return false; // Không tìm thấy món ăn với id đó
         }
     } else {
