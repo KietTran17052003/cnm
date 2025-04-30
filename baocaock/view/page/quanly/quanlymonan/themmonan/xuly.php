@@ -1,6 +1,6 @@
 <?php
 include_once("../../model/mMonAn.php");
-$pp = new MMonAN();
+$pp = new CMonAN();
 if (isset($_POST["btnAdd"])) {
     $tenmonan = $_POST["tenmonan"];
     $idloaimonan = $_POST["idloaimonan"];

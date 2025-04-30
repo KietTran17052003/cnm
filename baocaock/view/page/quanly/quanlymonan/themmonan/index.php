@@ -1,8 +1,5 @@
 <?php
 session_start();
-include_once("../../controller/cLoaiMonAn.php");
-$p = new CLoaiMonAN();
-include_once("xuly.php");
 if (!isset($_SESSION["dangnhap"])) {
     header("Location: ../../index.php?page=dangnhap");
     exit();
@@ -13,7 +10,7 @@ if (!isset($_SESSION["dangnhap"])) {
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Quản lý nhân viên</title>
+    <title>Quản lý món ăn</title>
     <style>
         * {
             box-sizing: border-box;
@@ -141,7 +138,12 @@ button a:hover {
 <body>
 
 <div class="wrapper">
-    <?php include_once(__DIR__ . "/../../layout/sidebar.php"); ?>
+    <?php 
+    include_once(__DIR__ . "/../../layout/sidebar.php"); 
+    include_once("../../controller/cLoaiMonAn.php");
+    $p = new CLoaiMonAN();
+    include_once("xuly.php");
+    ?>
     <div class="content">
     <form action="" method="post" enctype="multipart/form-data">
   <h2 style="text-align: center; padding-bottom: 10px;">THÊM MÓN ĂN</h2>
@@ -219,7 +221,7 @@ button a:hover {
   <!-- Hành động -->
   <div class="form-actions py-3">
         <button class="btn btn-primary">
-          <a href="index.php?page=quanly/quanlynhanvien" style="text-decoration: none; color: inherit;">Quay lại</a>
+          <a href="index.php?page=quanly/quanlymonan" style="text-decoration: none; color: inherit;">Quay lại</a>
         </button>
          
         <button type="reset" class="btn btn-secondary">
@@ -234,6 +236,53 @@ button a:hover {
     
 </div>
 
+<script>
+  function validateField(field, message, validator) {
+    const errorSpan = field.nextElementSibling;
+    if (!validator(field.value.trim())) {
+      errorSpan.textContent = message;
+      field.classList.add("is-invalid");
+    } else {
+      errorSpan.textContent = "";
+      field.classList.remove("is-invalid");
+    }
+  }
+
+  function validateForm() {
+    const tenmonan = document.getElementsByName("tenmonan")[0];
+    const giaban = document.getElementsByName("giaban")[0];
+    const hinhanh = document.getElementsByName("hinhanh")[0];
+    const idloaimonan = document.getElementsByName("idloaimonan")[0];
+    const mota = document.getElementsByName("mota")[0];
+    const trangthai = document.getElementsByName("trangthai")[0];
+
+    let isValid = true;
+
+    // Kiểm tra tên món ăn
+    validateField(tenmonan, "Tên món ăn không được để trống.", value => value.length > 0);
+
+    // Kiểm tra giá bán
+    validateField(giaban, "Giá bán phải là số dương.", value => !isNaN(value) && parseFloat(value) > 0);
+
+    // Kiểm tra hình ảnh
+    validateField(hinhanh, "Vui lòng chọn hình ảnh.", value => value.length > 0);
+
+    // Kiểm tra loại món ăn
+    validateField(idloaimonan, "Vui lòng chọn loại món ăn.", value => value !== "");
+
+    // Kiểm tra mô tả
+    validateField(mota, "Mô tả không được để trống.", value => value.length > 0);
+
+    // Kiểm tra trạng thái
+    validateField(trangthai, "Vui lòng chọn trạng thái.", value => value !== "");
+
+    // Nếu tất cả hợp lệ, hiển thị xác nhận
+    if (isValid) {
+      return confirm("Bạn có chắc chắn muốn thêm món ăn này không?");
+    }
+    return false; // Ngăn gửi form nếu không hợp lệ
+  }
+</script>
 
 </body>
 </html>

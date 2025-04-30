@@ -4,7 +4,6 @@ if (!isset($_SESSION["dangnhap"])) {
     header("Location: ../../index.php?page=dangnhap");
     exit();
 }
-include_once("themmonan/xuly.php");
 ?>
 
 <!DOCTYPE html>
@@ -203,7 +202,7 @@ td a:hover {
                         <td>" . (isset($loaimonan[$r['idloaimonan']]) ? $loaimonan[$r['idloaimonan']] : 'Không xác định') . "</td>
                         <td>{$r['mota']}</td>
                         <td><span class='{$statusClass}'>{$statusText}</span></td>
-                        <td><a href='index.php?page=quanly/quanlynhanvien/suamonan&id={$r['idmonan']}'><i class='fas fa-edit'></i></a></td>
+                        <td><a href='index.php?page=quanly/quanlymonan/capnhatmonan&id={$r['idmonan']}'><i class='fas fa-edit'></i></a></td>
                     </tr>";
                 }              
                 echo '</table>';
