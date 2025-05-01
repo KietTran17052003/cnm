@@ -5,7 +5,7 @@ class CBan {
     public function getAllBan() {
         $p = new MBan();
         // Lấy dữ liệu bàn từ SelectAllBan()
-        $tblSP = $p->SelectAllBan();
+        $tblSP = $p->getAllBan();
         
         // Kiểm tra nếu không có bàn nào
         if (empty($tblSP)) {

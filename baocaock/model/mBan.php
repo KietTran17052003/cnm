@@ -7,7 +7,7 @@ class MBan {
         $con = $p->connect();
     
         if ($con) {
-            $str = "SELECT * FROM ban";
+            $str = "SELECT * FROM ban ";
             $result = $con->query($str);
             $p->dongKetNoi($con);
     
@@ -131,6 +131,38 @@ class MBan {
             
             $stmt->close();
             $p->dongKetNoi($con);
+        } else {
+            return false;
+        }
+    }
+    
+    public function getAllBan() {
+        $p = new ketnoi();
+        $con = $p->connect();
+
+        if ($con) {
+            $sql = "SELECT 
+                        ban.*, 
+                        nguoidung.hoten AS tenkhachhang, 
+                        nguoidung.sdt AS sodienthoai 
+                    FROM ban 
+                    LEFT JOIN nguoidung ON ban.id_user = nguoidung.id_user";
+            $result = $con->query($sql);
+
+            if ($result->num_rows > 0) {
+                $data = array();
+                while ($row = $result->fetch_assoc()) {
+                    $data[] = $row;
+                }
+                $p->dongKetNoi($con);
+
+                // Kiểm tra dữ liệu trả về
+
+                return $data;
+            } else {
+                $p->dongKetNoi($con);
+                return false;
+            }
         } else {
             return false;
         }
