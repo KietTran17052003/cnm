@@ -1,4 +1,69 @@
 <?php
+session_start();
+include_once("../../controller/cBan.php");
+$p = new CBan();
+date_default_timezone_set('Asia/Ho_Chi_Minh'); // Múi giờ Việt Nam
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $idBan = $_POST['idBan'];
+    $action = $_POST['action'];
+
+    if ($action === 'reserve') {
+        // Xử lý đặt bàn
+        $id_user = $_SESSION['dangnhap']['id_user']; // Lấy id_user từ session
+        $ngaydatban = $_POST['ngaydatban']; // Giá trị datetime-local
+
+        if (!empty($id_user) && !empty($ngaydatban)) {
+            $sql = "UPDATE ban SET id_user = '$id_user', ngaydatban = '$ngaydatban', trangthai = 1 WHERE idban = $idBan";
+            $result = $p->getSua($sql);
+
+            if ($result) {
+                echo "<script>
+                window.onload = function() { alert('Đặt bàn thành công!'); 
+                setTimeout(function() {
+                window.location.href = 'index.php';
+                }, 1);
+                }
+            </script>";
+            } else {
+                echo "<script>
+                window.onload = function() { alert('Đặt bàn thất bại!'); 
+                setTimeout(function() {
+                window.location.href = 'index.php';
+                }, 1);
+                }
+            </script>";
+            }
+        } else {
+            echo "<script>alert('Vui lòng nhập đầy đủ thông tin!');</script>";
+        }
+    }
+}
+
+// Lấy danh sách bàn
+$tblBan = $p->getAllBan();
+
+// Kiểm tra dữ liệu trả về
+if (!$tblBan || !is_array($tblBan)) {
+    echo "<h3>Không có bàn nào được tìm thấy hoặc dữ liệu không hợp lệ!</h3>";
+    $tblBan = array(); // Đảm bảo $tblBan là một mảng rỗng để tránh lỗi
+}
+
+// Nhóm bàn theo lầu
+$groupedTables = array(); // Sử dụng array() thay vì []
+foreach ($tblBan as $ban) {
+    if (isset($ban['vitri'])) {
+        $groupedTables[$ban['vitri']][] = $ban;
+    }
+}
+
+// Sắp xếp lầu theo thứ tự tăng dần
+ksort($groupedTables);
+
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["action"]) && $_POST["action"] === "cancel") {
+    // Logic xử lý xóa đặt bàn
+}
+
 
 ?>
 <!DOCTYPE html>
@@ -141,6 +206,113 @@ button {
         .top-products{
             background: #F0F0F0;
         }
+        .flex-container {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        .table-container {
+            flex: 2;
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 58%; /* Giới hạn chiều rộng */
+        }
+
+        .table-details {
+            flex: 1;
+            width: 250px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            height: 500px; /* Đặt chiều cao cố định */
+            overflow-y: auto; /* Thêm thanh cuộn nếu nội dung vượt quá chiều cao */
+            font-size: 14px;
+            line-height: 1.5;
+            height: 100%; /* Đặt chiều cao cố định */
+        }
+
+        .table-details h3 {
+            font-size: 18px; /* Giảm kích thước tiêu đề */
+            margin-bottom: 10px;
+            text-align: center; /* Căn giữa tiêu đề */
+        }
+
+        .table-details p {
+            margin: 5px 0; /* Giảm khoảng cách giữa các dòng */
+        }
+
+        .table-details label {
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
+        }
+
+        .table-details input[type="text"],
+        .table-details input[type="date"] {
+            width: 100%;
+            padding: 5px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .table-details button {
+            width: 100%;
+            padding: 8px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .table-details button:hover {
+            background-color: #0056b3;
+        }
+        .table-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px; /* Giảm khoảng cách giữa các bàn */
+            justify-content: flex-start;
+        }
+
+        .table-card {
+            width: 120px; /* Làm nhỏ danh sách bàn */
+            border: 1px solid #bbb;
+            border-radius: 10px;
+            padding: 8px;
+            text-align: center;
+            background-color: #f9f9f9;
+            font-family: Arial, sans-serif;
+            font-size: 12px; /* Giảm kích thước chữ */
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+
+        .table-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            background-color: #ffffff;
+        }
+
+        .status.unavailable {
+            color: red;
+        }
+
+        .status {
+            font-weight: bold;
+            color: green;
+        }
     </style>
 </head>
 <body>
@@ -157,23 +329,60 @@ button {
         </div>
     </div>
     <section class="about-meal">
-                    <div class="container">
-                        <h1 class="section-heading">ĐẶT BÀN ONLINE</h1>
-                        <div class="about-meal-wrap flex">
-                            <div class="flex-1">
-                                <img src="../../img/nha-hang-tiec-cuoi-quan-1-hinh-anh-dep.jpg" alt="">
-                            </div>
-                            <div class="flex-1">
-                                <h2>Đặt bàn dễ dàng – Đón tiếp trọn vẹn tại Savoria</h2>
-                                <p style="margin-bottom: 2rem;">Bạn có thể chọn trước chỗ ngồi ưng ý, thời gian phù hợp và ghi chú mọi yêu cầu đặc biệt. 
-                                    Đội ngũ Savoria sẽ chuẩn bị sẵn sàng để mang đến trải nghiệm ẩm thực tinh tế nhất dành riêng cho bạn.</p>
-                                <p style="margin-bottom: 2rem;">Ưu đãi đặc biệt: Đặt bàn online trước 24h nhận ngay miễn phí món khai vị đặc trưng của nhà hàng.</p>
-                                <p> <i class="fas fa-arrow-right"></i> Đặt bàn ngay hôm nay – tận hưởng không gian sang trọng – để mỗi khoảnh khắc tại Savoria thêm trọn vẹn.</p>
-                                <!-- <button class="btn btn-secondary">Read More</button> -->
+    <div class="container">
+        <h1 class="section-heading">ĐẶT BÀN ONLINE</h1>
+        <div class="flex-container">
+            <!-- Danh sách bàn -->
+            <div class="table-container">
+                <?php if (empty($groupedTables)): ?>
+                    <p>Không có bàn nào để hiển thị.</p>
+                <?php else: ?>
+                    <?php foreach ($groupedTables as $lau => $tables): ?>
+                        <div class="floor-group">
+                            <h3>Lầu: <?php echo htmlspecialchars($lau); ?></h3>
+                            <div class="table-group">
+                                <?php foreach ($tables as $ban): ?>
+                                    <div class="table-card" onclick="showTableDetails(<?php echo htmlspecialchars(json_encode($ban)); ?>)">
+                                        <h3>Bàn #<?php echo htmlspecialchars($ban['idban']); ?></h3>
+                                        <p>Số ghế: <?php echo !empty($ban['soghe']) ? htmlspecialchars($ban['soghe']) : "Không xác định"; ?></p>
+                                        <p class="status <?php echo $ban['trangthai'] == 0 ? 'unavailable' : ''; ?>">
+                                            <?php echo $ban['trangthai'] == 0 ? 'Chưa sử dụng' : 'Đang sử dụng'; ?>
+                                        </p>
+                                    </div>
+                                <?php endforeach; ?>
                             </div>
                         </div>
-                    </div>
-    </section>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </div>
+
+            <!-- Thông tin bàn -->
+            <div id="table-details" class="table-details" style="display: none;">
+                <h3>Thông tin bàn</h3>
+                <form method="POST" action="">
+                    <p>ID Bàn: <span id="table-id-display"></span></p>
+                    <input type="hidden" id="table-id" name="idBan">
+
+                    <p>Số ghế: <span id="table-seats-display"></span></p>
+                    <p>Lầu: <span id="table-floor-display"></span></p>
+                    <p>Trạng thái: <span id="table-status-value"></span></p>
+
+                    <label for="reservation-date">Ngày đặt bàn:</label>
+                    <input type="datetime-local" id="reservation-date" name="ngaydatban">
+
+                    <?php if (isset($_SESSION['dangnhap'])): ?>
+                        <!-- Nếu đã đăng nhập, hiển thị nút Đặt bàn -->
+                        <button type="submit" name="action" value="reserve" id="reserve-btn" style="display: none;">Đặt bàn</button>
+                    <?php else: ?>
+                        <!-- Nếu chưa đăng nhập, chuyển hướng đến trang đăng nhập -->
+                        <button type="button" onclick="window.location.href='../../view/page/index.php?page=dangnhap';" id="reserve-btn" style="display: none;">Đăng nhập để đặt bàn</button>
+                    <?php endif; ?>
+                    <button type="button" onclick="clearDetails()">Hủy</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
     <section class="top-products">
                     <div class="container">
                         <h1 class="section-heading">THỰC ĐƠN</h1>
@@ -212,4 +421,47 @@ function changeSlide(direction) {
 setInterval(() => {
     changeSlide(1);
 }, 3000);
+
+function showTableDetails(table) {
+    document.getElementById('table-id-display').textContent = table.idban;
+    document.getElementById('table-id').value = table.idban;
+
+    document.getElementById('table-seats-display').textContent = table.soghe ? table.soghe : 'Không xác định';
+    document.getElementById('table-floor-display').textContent = table.vitri;
+    document.getElementById('table-status-value').textContent = table.trangthai == 0 ? 'Chưa sử dụng' : 'Đang sử dụng';
+
+    const reserveBtn = document.getElementById('reserve-btn');
+    const reservationDateInput = document.getElementById('reservation-date');
+
+    if (table.trangthai == 0) {
+        // Bàn chưa sử dụng
+        reserveBtn.style.display = 'inline-block';
+        reservationDateInput.value = ''; // Reset giá trị
+        reservationDateInput.disabled = false;
+    } else {
+        // Bàn đang sử dụng
+        reserveBtn.style.display = 'none';
+        if (table.ngaydatban) {
+            // Chuyển đổi thời gian từ cơ sở dữ liệu sang định dạng datetime-local
+            const datetime = new Date(table.ngaydatban);
+            const offset = datetime.getTimezoneOffset() * 60000; // Lấy offset múi giờ
+            const localDatetime = new Date(datetime.getTime() - offset); // Chuyển sang giờ địa phương
+            const formattedDatetime = localDatetime.toISOString().slice(0, 16); // Định dạng YYYY-MM-DDTHH:MM
+            reservationDateInput.value = formattedDatetime;
+        } else {
+            reservationDateInput.value = '';
+        }
+        reservationDateInput.disabled = true;
+    }
+
+    document.getElementById('table-details').style.display = 'block';
+}
+
+function clearDetails() {
+    document.getElementById('table-details').style.display = 'none';
+}
 </script>
+<?php
+$datetime = new DateTime($ngaydatban); // $ngaydatban là giá trị từ cơ sở dữ liệu
+echo $datetime->format('d/m/Y H:i'); // Hiển thị định dạng ngày/tháng/năm giờ:phút
+?>

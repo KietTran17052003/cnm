@@ -9,15 +9,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($action === 'reserve') {
         // Xử lý đặt bàn
         $tenkh = $_POST['tenkh'];
+        $sdt = $_POST['sdt'];
         $ngaydatban = $_POST['ngaydatban'];
 
-        if (!empty($tenkh) && !empty($ngaydatban)) {
-            $sql = "UPDATE ban SET tenkh = '$tenkh', ngaydatban = '$ngaydatban', trangthai = 1 WHERE idban = $idBan";
+        if (!empty($tenkh) && !empty($sdt) && !empty($ngaydatban)) {
+            $sql = "UPDATE ban SET tenkh = '$tenkh', sdt = '$sdt', ngaydatban = '$ngaydatban', trangthai = 1 WHERE idban = $idBan";
             $result = $p->getSua($sql);
 
             if ($result) {
                 echo "<script>
-                window.onload = function() { alert('dặt bàn thành công!'); 
+                window.onload = function() { alert('Đặt bàn thành công!'); 
                 setTimeout(function() {
                 window.location.href = 'index.php?page=quanly/quanlyban/';
                 }, 1);
@@ -25,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </script>";
             } else {
                 echo "<script>
-                window.onload = function() { alert('dặt bàn thất bại!'); 
+                window.onload = function() { alert('Đặt bàn thất bại!'); 
                 setTimeout(function() {
                 window.location.href = 'index.php?page=quanly/quanlyban/';
                 }, 1);
@@ -37,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     } elseif ($action === 'cancel') {
         // Xử lý xóa đặt bàn
-        $sql = "UPDATE ban SET id_user = NULL, tenkh = NULL, ngaydatban = NULL, trangthai = 0 WHERE idban = $idBan";
+        $sql = "UPDATE ban SET id_user = NULL, tenkh = NULL,sdt = NULL, ngaydatban = NULL, trangthai = 0 WHERE idban = $idBan";
         $result = $p->getSua($sql);
 
         if ($result) {
@@ -70,6 +71,9 @@ foreach ($tblBan as $ban) {
         $groupedTables[$ban['vitri']][] = $ban;
     }
 }
+
+// Sắp xếp lầu theo thứ tự tăng dần
+ksort($groupedTables);
 ?>
 
 <!DOCTYPE html>
@@ -222,9 +226,13 @@ foreach ($tblBan as $ban) {
                         <label for="customer-name">Họ tên KH:</label>
                         <input type="text" id="customer-name" name="tenkh" placeholder="Nhập họ tên khách hàng">
 
+                        <!-- Input Số điện thoại -->
+                        <label for="customer-phone">Số điện thoại:</label>
+                        <input type="text" id="customer-phone" name="sdt" placeholder="Nhập số điện thoại">
+
                         <!-- Input Ngày đặt bàn -->
                         <label for="reservation-date">Ngày đặt bàn:</label>
-                        <input type="date" id="reservation-date" name="ngaydatban">
+                        <input type="datetime-local" id="reservation-date" name="ngaydatban">
 
                         <!-- Nút Đặt bàn -->
                         <button type="submit" name="action" value="reserve" id="reserve-btn" style="display: none;">Đặt bàn</button>
@@ -251,6 +259,7 @@ foreach ($tblBan as $ban) {
             const reserveBtn = document.getElementById('reserve-btn');
             const cancelReservationBtn = document.getElementById('cancel-reservation-btn');
             const customerNameInput = document.getElementById('customer-name');
+            const customerPhoneInput = document.getElementById('customer-phone');
             const reservationDateInput = document.getElementById('reservation-date');
             const customerInfo = document.getElementById('customer-info');
             const customerNameDisplay = document.getElementById('customer-name-display');
@@ -261,23 +270,35 @@ foreach ($tblBan as $ban) {
                 reserveBtn.style.display = 'inline-block';
                 cancelReservationBtn.style.display = 'none';
                 customerNameInput.value = '';
+                customerPhoneInput.value = '';
                 reservationDateInput.value = '';
                 customerNameInput.disabled = false;
+                customerPhoneInput.disabled = false;
                 reservationDateInput.disabled = false;
                 customerInfo.style.display = 'none';
             } else {
                 // Bàn đang sử dụng
                 reserveBtn.style.display = 'none';
                 cancelReservationBtn.style.display = 'inline-block';
-                if (table.tenkhachhang) {
-                    customerNameInput.value = table.tenkhachhang || '';;
-                } else{
-                    customerNameInput.value = table.tenkh || '';
+                customerNameInput.value = table.tenkhachhang || table.tenkh || '';
+                customerPhoneInput.value = table.sodienthoai || table.sdt ||'';
+                if (table.ngaydatban) {
+                    const datetime = new Date(table.ngaydatban);
+                    const offset = datetime.getTimezoneOffset() * 60000; // Lấy offset múi giờ
+                    const localDatetime = new Date(datetime.getTime() - offset); // Chuyển sang giờ địa phương
+                    const formattedDatetime = localDatetime.toISOString().slice(0, 16); // Định dạng YYYY-MM-DDTHH:MM
+                    reservationDateInput.value = formattedDatetime;
+                } else {
+                    reservationDateInput.value = '';
                 }
-                reservationDateInput.value = table.ngaydatban || '';
                 customerNameInput.disabled = true;
+                customerPhoneInput.disabled = true;
                 reservationDateInput.disabled = true;
 
+                // Hiển thị thông tin khách hàng
+                customerNameDisplay.textContent = table.tenkhachhang || table.tenkh || 'Không xác định';
+                customerPhoneDisplay.textContent = table.sodienthoai || 'Không xác định';
+                customerInfo.style.display = 'block';
             }
 
             document.getElementById('table-details').style.display = 'block';
