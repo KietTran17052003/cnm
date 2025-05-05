@@ -4,66 +4,44 @@ include_once("../../controller/cBan.php");
 $p = new CBan();
 date_default_timezone_set('Asia/Ho_Chi_Minh'); // Múi giờ Việt Nam
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $idBan = $_POST['idBan'];
-    $action = $_POST['action'];
 
-    if ($action === 'reserve') {
-        // Xử lý đặt bàn
-        $id_user = $_SESSION['dangnhap']['id_user']; // Lấy id_user từ session
-        $ngaydatban = $_POST['ngaydatban']; // Giá trị datetime-local
-
-        if (!empty($id_user) && !empty($ngaydatban)) {
-            $sql = "UPDATE ban SET id_user = '$id_user', ngaydatban = '$ngaydatban', trangthai = 1 WHERE idban = $idBan";
-            $result = $p->getSua($sql);
-
-            if ($result) {
-                echo "<script>
-                window.onload = function() { alert('Đặt bàn thành công!'); 
-                setTimeout(function() {
-                window.location.href = 'index.php';
-                }, 1);
-                }
-            </script>";
-            } else {
-                echo "<script>
-                window.onload = function() { alert('Đặt bàn thất bại!'); 
-                setTimeout(function() {
-                window.location.href = 'index.php';
-                }, 1);
-                }
-            </script>";
-            }
-        } else {
-            echo "<script>alert('Vui lòng nhập đầy đủ thông tin!');</script>";
-        }
-    }
-}
-
-// Lấy danh sách bàn
-$tblBan = $p->getAllBan();
-
-// Kiểm tra dữ liệu trả về
-if (!$tblBan || !is_array($tblBan)) {
-    echo "<h3>Không có bàn nào được tìm thấy hoặc dữ liệu không hợp lệ!</h3>";
-    $tblBan = array(); // Đảm bảo $tblBan là một mảng rỗng để tránh lỗi
-}
-
-// Nhóm bàn theo lầu
-$groupedTables = array(); // Sử dụng array() thay vì []
-foreach ($tblBan as $ban) {
-    if (isset($ban['vitri'])) {
-        $groupedTables[$ban['vitri']][] = $ban;
-    }
-}
-
-// Sắp xếp lầu theo thứ tự tăng dần
-ksort($groupedTables);
 
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["action"]) && $_POST["action"] === "cancel") {
     // Logic xử lý xóa đặt bàn
 }
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'add_booking') {
+    // Kiểm tra người dùng đã đăng nhập hay chưa
+    if (!isset($_SESSION['dangnhap'])) {
+        echo "<script>alert('Vui lòng đăng nhập để đặt bàn!'); window.location.href = 'index.php?page=dangnhap';</script>";
+        exit();
+    }
+
+    $tenkh = $_POST['name'];
+    $ngaydatban = $_POST['datetime'];
+    $sdt = $_POST['phone'];
+    $id_user = $_SESSION['dangnhap']['id_user'];
+    $email = $_POST['email'];
+    $ghichu = $_POST['message'];
+    $soluong = $_POST['quantity'];
+
+    if (!empty($tenkh) && !empty($ngaydatban) && !empty($sdt) && !empty($email) && !empty($soluong)) {
+        // Tạo câu lệnh SQL để thêm đơn đặt bàn
+        $sql = "INSERT INTO dondatban (tenkh, ngaydatban, sdt, id_user, email, ghichu, soluong) 
+                VALUES ('$tenkh', '$ngaydatban', '$sdt', $id_user, '$email', '$ghichu', $soluong)";
+        
+        // Gọi phương thức getthemddb để thực hiện thêm
+        $result = $p->getthemddb($sql);
+
+        if ($result === 1) {
+            echo "<script>alert('Đặt bàn thành công!'); window.location.href = 'index.php?page=home';</script>";
+        } else {
+            echo "<script>alert('Đặt bàn thất bại!');</script>";
+        }
+    } else {
+        echo "<script>alert('Vui lòng nhập đầy đủ thông tin!');</script>";
+    }
+}
 
 ?>
 <!DOCTYPE html>
@@ -71,12 +49,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["action"]) && $_POST["
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Trang chủ</title>
     <link rel="stylesheet" href="../layout/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
 
     <style>
-        .big-image{
+        .big-image {
             display: flex;
             justify-content: center;
             align-items: center;
@@ -85,7 +63,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["action"]) && $_POST["
             position: relative;
             overflow: hidden;
         }
-        .big-image::before{
+        .big-image::before {
             content: "";
             display: block;
             position: absolute;
@@ -100,14 +78,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["action"]) && $_POST["
             animation: Inout 5s infinite;
         }
         @keyframes Inout {
-            0%,100%{
+            0%, 100% {
                 transform: scale(1);
             }
-            50%{
+            50% {
                 transform: scale(1.1);
             }
         }
-        .big-image::after{
+        .big-image::after {
             content: "";
             display: block;
             position: absolute;
@@ -117,207 +95,158 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["action"]) && $_POST["
             opacity: 0.3;
             z-index: -2;
         }
-        .big-image .big-image-content{
+        .big-image .big-image-content {
             text-align: center;
         }
-        .big-image .big-image-content h2{
+        .big-image .big-image-content h2 {
             font-size: 50px;
             color: white;
             font-family: 'Dancing Script';
         }
-        .big-image .big-image-content p{
+        .big-image .big-image-content p {
             font-size: 20px;
             color: white;
             margin: 15px 0;
-            
         }
         /* Slider */
-.slider-container {
-    position: relative;
-    width: 100%;
-    overflow: hidden;
-}
-
-.slides {
-    display: flex;
-    transition: transform 0.5s ease-in-out;
-}
-.slide {
-    min-width: 100%;
-    height: 400px;
-    background-color: #ddd;
-}
-.slider-container {
-    position: relative;
-    width: 100%;
-    margin: auto;
-    overflow: hidden;
-}
-.slides{
-    display: flex;
-    transition: transform 0.5s ease;
-}
-.slide {
-    width: 100%;
-    height: 500px;
-    background-size: cover;
-    background-position: center;
-}
-.slide-1 {
-    background-image: url("https://arcviet.vn/wp-content/webp-express/webp-images/uploads/2016/07/thiet-ke-noi-that-nha-hang3.jpg.webp");
-            
-}
-.slide-2 {
-    background-image: url('../../img/nha-hang-2.jpeg');
-}
-.slide-3 {
-    background-image: url('../../img/nha-hang-1.jpg');
-}
-.navigation {
-    position: absolute;
-    top: 50%;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    transform: translateY(-50%);
-}
-button {
-    background-color: rgba(255, 255, 255, 0.7);
-    border: none;
-    cursor: pointer;
-    padding: 10px;
-}
-        /* .btn {
-            background-color: transparent;
-            padding: 15px 30px;
-            border: 2px solid #EEBF00;
-            border-radius: 50px;
-            color: #EEBF00;
-            cursor: pointer;
-            transition: all 0.3s ease;
+        .slider-container {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
         }
-        .btn:hover{
-            background-color: #ffffff;
-
-        } */
-        .section-heading{
-            color: #232B38;
-        }
-        .top-products{
-            background: #F0F0F0;
-        }
-        .flex-container {
+        .slides {
             display: flex;
-            gap: 20px;
-            align-items: flex-start;
+            transition: transform 0.5s ease-in-out;
         }
-
-        .table-container {
-            flex: 2;
-            background-color: #f9f9f9;
-            padding: 10px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            max-width: 58%; /* Giới hạn chiều rộng */
+        .slide {
+            min-width: 100%;
+            height: 400px;
+            background-color: #ddd;
         }
-
-        .table-details {
-            flex: 1;
-            width: 250px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            background-color: #fff;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            height: 500px; /* Đặt chiều cao cố định */
-            overflow-y: auto; /* Thêm thanh cuộn nếu nội dung vượt quá chiều cao */
-            font-size: 14px;
-            line-height: 1.5;
-            height: 100%; /* Đặt chiều cao cố định */
+        .slide-1 {
+            background-image: url("https://arcviet.vn/wp-content/webp-express/webp-images/uploads/2016/07/thiet-ke-noi-that-nha-hang3.jpg.webp");
+            background-size: cover;
+            background-position: center;
         }
-
-        .table-details h3 {
-            font-size: 18px; /* Giảm kích thước tiêu đề */
-            margin-bottom: 10px;
-            text-align: center; /* Căn giữa tiêu đề */
+        .slide-2 {
+            background-image: url('../../img/nha-hang-2.jpeg');
+            background-size: cover;
+            background-position: center;
         }
-
-        .table-details p {
-            margin: 5px 0; /* Giảm khoảng cách giữa các dòng */
+        .slide-3 {
+            background-image: url('../../img/nha-hang-1.jpg');
+            background-size: cover;
+            background-position: center;
         }
-
-        .table-details label {
-            font-weight: bold;
-            display: block;
-            margin-top: 10px;
-        }
-
-        .table-details input[type="text"],
-        .table-details input[type="date"] {
+        .navigation {
+            position: absolute;
+            top: 50%;
             width: 100%;
-            padding: 5px;
-            margin-top: 5px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
         }
-
-        .table-details button {
-            width: 100%;
-            padding: 8px;
-            margin-top: 10px;
+        button {
+            background-color: rgba(255, 255, 255, 0.7);
             border: none;
-            border-radius: 4px;
-            background-color: #007bff;
-            color: white;
-            font-size: 14px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            padding: 10px;
         }
-
-        .table-details button:hover {
-            background-color: #0056b3;
-        }
-        .table-group {
+        .form-group {
+            margin-bottom: 15px;
             display: flex;
-            flex-wrap: wrap;
-            gap: 10px; /* Giảm khoảng cách giữa các bàn */
-            justify-content: flex-start;
+            flex-direction: column;
         }
 
-        .table-card {
-            width: 120px; /* Làm nhỏ danh sách bàn */
-            border: 1px solid #bbb;
-            border-radius: 10px;
-            padding: 8px;
-            text-align: center;
-            background-color: #f9f9f9;
-            font-family: Arial, sans-serif;
-            font-size: 12px; /* Giảm kích thước chữ */
-            transition: transform 0.2s, box-shadow 0.2s;
-            cursor: pointer;
-        }
-
-        .table-card:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-            background-color: #ffffff;
-        }
-
-        .status.unavailable {
-            color: red;
-        }
-
-        .status {
+        label {
             font-weight: bold;
-            color: green;
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: #333;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        input:focus, textarea:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+            outline: none;
+        }
+
+        textarea {
+            resize: none;
+            height: 100px;
+        }
+
+        .btn-submit {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .btn-submit:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        .btn-submit:active {
+            transform: scale(1);
+        }
+
+        .flex-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h1.section-heading {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+            text-transform: uppercase;
+            font-family: 'Arial', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        input::placeholder, textarea::placeholder {
+            color: #aaa;
+            font-style: italic;
+        }
+
+        section.about-meal {
+            margin-bottom: 50px; /* Khoảng cách phía dưới phần "ĐẶT BÀN ONLINE" */
+        }
+
+        section.top-products {
+            margin-bottom: 50px; /* Tạo khoảng cách giữa phần "THỰC ĐƠN" và footer */
+        }
+
+        footer {
+            padding-top: 20px; /* Đảm bảo footer có khoảng cách bên trong */
         }
     </style>
 </head>
 <body>
-    
-<div class="slider-container">
+    <div class="slider-container">
         <div class="slides">
             <div class="slide slide-1"></div>
             <div class="slide slide-2"></div>
@@ -332,54 +261,37 @@ button {
     <div class="container">
         <h1 class="section-heading">ĐẶT BÀN ONLINE</h1>
         <div class="flex-container">
-            <!-- Danh sách bàn -->
-            <div class="table-container">
-                <?php if (empty($groupedTables)): ?>
-                    <p>Không có bàn nào để hiển thị.</p>
-                <?php else: ?>
-                    <?php foreach ($groupedTables as $lau => $tables): ?>
-                        <div class="floor-group">
-                            <h3>Lầu: <?php echo htmlspecialchars($lau); ?></h3>
-                            <div class="table-group">
-                                <?php foreach ($tables as $ban): ?>
-                                    <div class="table-card" onclick="showTableDetails(<?php echo htmlspecialchars(json_encode($ban)); ?>)">
-                                        <h3>Bàn #<?php echo htmlspecialchars($ban['idban']); ?></h3>
-                                        <p>Số ghế: <?php echo !empty($ban['soghe']) ? htmlspecialchars($ban['soghe']) : "Không xác định"; ?></p>
-                                        <p class="status <?php echo $ban['trangthai'] == 0 ? 'unavailable' : ''; ?>">
-                                            <?php echo $ban['trangthai'] == 0 ? 'Chưa sử dụng' : 'Đang sử dụng'; ?>
-                                        </p>
-                                    </div>
-                                <?php endforeach; ?>
-                            </div>
-                        </div>
-                    <?php endforeach; ?>
-                <?php endif; ?>
-            </div>
-
-            <!-- Thông tin bàn -->
-            <div id="table-details" class="table-details" style="display: none;">
-                <h3>Thông tin bàn</h3>
-                <form method="POST" action="">
-                    <p>ID Bàn: <span id="table-id-display"></span></p>
-                    <input type="hidden" id="table-id" name="idBan">
-
-                    <p>Số ghế: <span id="table-seats-display"></span></p>
-                    <p>Lầu: <span id="table-floor-display"></span></p>
-                    <p>Trạng thái: <span id="table-status-value"></span></p>
-
-                    <label for="reservation-date">Ngày đặt bàn:</label>
-                    <input type="datetime-local" id="reservation-date" name="ngaydatban">
-
-                    <?php if (isset($_SESSION['dangnhap'])): ?>
-                        <!-- Nếu đã đăng nhập, hiển thị nút Đặt bàn -->
-                        <button type="submit" name="action" value="reserve" id="reserve-btn" style="display: none;">Đặt bàn</button>
-                    <?php else: ?>
-                        <!-- Nếu chưa đăng nhập, chuyển hướng đến trang đăng nhập -->
-                        <button type="button" onclick="window.location.href='../../view/page/index.php?page=dangnhap';" id="reserve-btn" style="display: none;">Đăng nhập để đặt bàn</button>
-                    <?php endif; ?>
-                    <button type="button" onclick="clearDetails()">Hủy</button>
-                </form>
-            </div>
+            <!-- Form đặt bàn -->
+            <form action="" method="POST">
+                <input type="hidden" name="action" value="add_booking">
+                <div class="form-group">
+                    <label for="name">Tên của bạn</label>
+                    <input type="text" id="name" name="name" placeholder="Nhập tên của bạn" required>
+                </div>
+                <div class="form-group">
+                    <label for="datetime">Ngày giờ</label>
+                    <input type="datetime-local" id="datetime" name="datetime" required>
+                </div>
+                <div class="form-group">
+                    <label for="quantity">Số lượng</label>
+                    <input type="number" id="quantity" name="quantity" placeholder="Nhập số lượng" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email của bạn</label>
+                    <input type="email" id="email" name="email" placeholder="Nhập email của bạn" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Số điện thoại</label>
+                    <input type="tel" id="phone" name="phone" placeholder="Nhập số điện thoại" required>
+                </div>
+                <div class="form-group">
+                    <label for="message">Nội dung</label>
+                    <textarea id="message" name="message" placeholder="Nhập nội dung"></textarea>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn-submit">ĐẶT LỊCH</button>
+                </div>
+            </form>
         </div>
     </div>
 </section>
@@ -461,7 +373,3 @@ function clearDetails() {
     document.getElementById('table-details').style.display = 'none';
 }
 </script>
-<?php
-$datetime = new DateTime($ngaydatban); // $ngaydatban là giá trị từ cơ sở dữ liệu
-echo $datetime->format('d/m/Y H:i'); // Hiển thị định dạng ngày/tháng/năm giờ:phút
-?>

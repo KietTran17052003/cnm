@@ -167,5 +167,23 @@ class MBan {
             return false;
         }
     }
+    public function themddb($sql) {
+        $p = new ketnoi();
+        $con = $p->connect();
+        
+        if ($con) {
+            if ($con->query($sql) === TRUE) {
+                // Đóng kết nối sau khi thực hiện truy vấn thành công
+                $p->dongKetNoi($con);
+                return true;
+            } else {
+                // Đóng kết nối sau khi truy vấn không thành công
+                $p->dongKetNoi($con);
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
 }
 ?>

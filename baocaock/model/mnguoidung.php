@@ -54,6 +54,44 @@ class MNguoiDung {
             return false;
         }
     }
+    public function dangky($sql) {
+        $p = new ketnoi();
+        $con = $p->connect();
+        
+        if ($con) {
+            if ($con->query($sql) === TRUE) {
+                // Đóng kết nối sau khi thực hiện truy vấn thành công
+                $p->dongKetNoi($con);
+                return true;
+            } else {
+                // Đóng kết nối sau khi truy vấn không thành công
+                $p->dongKetNoi($con);
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    public function kiemtraEmail($email) {
+        $p = new ketnoi();
+        $con = $p->connect();
+
+        if ($con) {
+            $stmt = $con->prepare("SELECT email FROM nguoidung WHERE email = ?");
+            $stmt->bind_param("s", $email);
+            $stmt->execute();
+            $stmt->store_result();
+
+            if ($stmt->num_rows > 0) {
+                return true; // Email đã tồn tại
+            } else {
+                return false; // Email chưa tồn tại
+            }
+        } else {
+            return false; // Lỗi kết nối
+        }
+    }
 }
 ?>
 

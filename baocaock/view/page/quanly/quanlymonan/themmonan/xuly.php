@@ -1,5 +1,5 @@
 <?php
-include_once("../../model/mMonAn.php");
+include_once("../../controller/cMonAn.php");
 $pp = new CMonAN();
 if (isset($_POST["btnAdd"])) {
     $tenmonan = $_POST["tenmonan"];

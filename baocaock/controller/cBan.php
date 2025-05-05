@@ -77,5 +77,15 @@ class CBan {
             }
         }
     }
+    public function getthemddb($sql) {
+        $p = new MBan(); // Sửa lại để sử dụng MBan thay vì MCuaHang
+        $result = $p->themddb($sql);
+
+        if (!$result) {
+            return -1;  // Lỗi khi thêm
+        } else {
+            return 1;  // Thành công
+        }
+    }
 }
 ?>

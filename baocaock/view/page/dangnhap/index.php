@@ -59,7 +59,8 @@ session_start();
     }
     .button-group {
       display: flex;
-      justify-content: space-between;
+      justify-content: center; /* Căn giữa nút */
+      margin-top: 16px; /* Thêm khoảng cách trên */
     }
     .button {
       padding: 10px 16px;
@@ -125,6 +126,7 @@ session_start();
                   <input type="password" name="password" id="password" placeholder="Mật khẩu" required />
               </div>
               <a href="#" class="forgot-password">Quên mật khẩu?</a>
+              <a href="index.php?page=dangky" class="forgot-password">Đăng ký</a>
               <div class="button-group">
                   <button type="submit" class="button button-green" name="btDangnhap">Đăng nhập</button>
               </div>
