@@ -1,6 +1,4 @@
-<?php
-session_start();
-?>
+
 
 <style>
   .container1{
@@ -125,7 +123,7 @@ session_start();
                   <i class="fas fa-lock"></i>
                   <input type="password" name="password" id="password" placeholder="Mật khẩu" required />
               </div>
-              <a href="#" class="forgot-password">Quên mật khẩu?</a>
+              <a href="index.php?page=dangky" class="forgot-password">Đăng ký</a>
               <div class="button-group">
                   <button type="submit" class="button button-green" name="btDangnhap">Đăng nhập</button>
               </div>

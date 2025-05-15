@@ -134,7 +134,6 @@ td a:hover {
             include_once("../../controller/cDonDatBan.php");
             $p = new CDonDatBan();
             $tblDon = $p->getAllDon(); // Gọi hàm để lấy tất cả đơn đặt bàn (hoặc tên hàm tương ứng)
-
             
             // Kiểm tra và hiển thị kết quả           
             if ($tblDon && $tblDon->num_rows > 0) {

@@ -11,21 +11,23 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["action"]) && $_POST["
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'add_booking') {
-    // Kiểm tra người dùng đã đăng nhập hay chưa
-    
-
+    if (!isset($_SESSION['dangnhap'])) {
+        echo "<script>alert('Vui lòng đăng nhập để đặt bàn!'); window.location.href = 'index.php?page=dangnhap';</script>";
+        exit();
+    }
     $tenkh = $_POST['name'];
     $ngaydatban = $_POST['datetime'];
     $sdt = $_POST['phone'];
-    
+    $iduser = $_SESSION['dangnhap']['id_user'];
     $email = $_POST['email'];
     $ghichu = $_POST['message'];
     $soluong = $_POST['quantity'];
+    $trangthai = 0;
 
     if (!empty($tenkh) && !empty($ngaydatban) && !empty($sdt) && !empty($email) && !empty($soluong)) {
         // Tạo câu lệnh SQL để thêm đơn đặt bàn
-        $sql = "INSERT INTO dondatban (tenkh, ngaydatban, sdt, email, ghichu, soluong) 
-                VALUES ('$tenkh', '$ngaydatban', '$sdt', '$email', '$ghichu', $soluong)";
+        $sql = "INSERT INTO dondatban (tenkh, ngaydatban, sdt, email, ghichu, soluong, trangthai, iduser) 
+                VALUES ('$tenkh', '$ngaydatban', '$sdt', '$email', '$ghichu', $soluong, $trangthai, $iduser)";
         
         // Gọi phương thức getthemddb để thực hiện thêm
         $result = $p->getthemddb($sql);
