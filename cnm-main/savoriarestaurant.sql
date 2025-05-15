@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 15, 2025 at 09:33 AM
+-- Generation Time: May 15, 2025 at 10:23 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -105,16 +105,21 @@ CREATE TABLE `dondatban` (
   `sdt` varchar(20) DEFAULT NULL,
   `email` varchar(100) DEFAULT NULL,
   `ghichu` varchar(1000) DEFAULT NULL,
-  `soluong` int(11) NOT NULL
+  `soluong` int(11) NOT NULL,
+  `trangthai` int(11) NOT NULL,
+  `iduser` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Dumping data for table `dondatban`
 --
 
-INSERT INTO `dondatban` (`idddb`, `tenkh`, `ngaydatban`, `sdt`, `email`, `ghichu`, `soluong`) VALUES
-(1, 'Trần Cao Kiệt', '2025-05-05 22:05:00', '0364127297', 'abc@gmail.com', '123123', 1),
-(2, 'Trần Văn Ân', '2025-05-17 17:27:00', '0352856380', 'abc@gmail.com', 'sfsdg', 5);
+INSERT INTO `dondatban` (`idddb`, `tenkh`, `ngaydatban`, `sdt`, `email`, `ghichu`, `soluong`, `trangthai`, `iduser`) VALUES
+(1, 'Trần Cao Kiệt', '2025-05-05 22:05:00', '0364127297', 'abc@gmail.com', '123123', 1, 0, 0),
+(2, 'Trần Văn Ân', '2025-05-17 17:27:00', '0352856380', 'abc@gmail.com', 'sfsdg', 5, 0, 0),
+(3, 'Nam', '2025-05-15 15:24:00', '0864256786', 'nam123@gmail.com', '', 6, 0, 15),
+(4, 'Nam', '2025-05-15 15:24:00', '0864256786', 'nam123@gmail.com', '', 6, 0, 15),
+(5, 'Nguyễn Hạnh', '2025-05-24 15:26:00', '0837274829', 'hanh@gmail.com', '', 7, 0, 15);
 
 -- --------------------------------------------------------
 
@@ -229,7 +234,8 @@ INSERT INTO `nguoidung` (`id_user`, `hoten`, `gioitinh`, `email`, `sdt`, `id_rol
 (4, 'Nguyễn Minh', 1, 'minh123@gmail.com', '0324685468', 3, 'e10adc3949ba59abbe56e057f20f883e', 1),
 (5, 'admin', 1, 'admin@admin.com', '0123456789', 1, '21232f297a57a5a743894a0e4a801fc3', 1),
 (6, 'Trần Văn Ân', 1, 'an@gmail.com', '0123456789', 1, '123456', 1),
-(14, 'kiệt trần', 1, 'abc@gmail.com', '0364127297', 4, 'e10adc3949ba59abbe56e057f20f883e', 1);
+(14, 'kiệt trần', 1, 'abc@gmail.com', '0364127297', 4, 'e10adc3949ba59abbe56e057f20f883e', 1),
+(15, 'Quỳnh Hương', 0, 'qhuong@gmail.com', '0964628423', 4, 'e10adc3949ba59abbe56e057f20f883e', 1);
 
 -- --------------------------------------------------------
 
@@ -350,7 +356,7 @@ ALTER TABLE `chitiethoadon`
 -- AUTO_INCREMENT for table `dondatban`
 --
 ALTER TABLE `dondatban`
-  MODIFY `idddb` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `idddb` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `giohang`
@@ -374,7 +380,7 @@ ALTER TABLE `monan`
 -- AUTO_INCREMENT for table `nguoidung`
 --
 ALTER TABLE `nguoidung`
-  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `vaitro`
