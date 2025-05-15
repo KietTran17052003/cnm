@@ -6,7 +6,7 @@ class MDonDatBan{
         $con = $p->connect();
         $con->set_charset('utf8');
         if($con){
-            $str = "SELECT idddb, tenkh, ngaydatban, sdt, email, ghichu, soluong
+            $str = "SELECT idddb, tenkh, ngaydatban, sdt, email, ghichu, soluong, trangthai
             FROM dondatban";
             
     
@@ -59,5 +59,26 @@ class MDonDatBan{
     //         return false; // không thể kết nối đến csdl
     //     }
     // }
+
+    public function capNhatTrangThaiDon($id, $trangthai){
+            $p = new ketnoi();  
+            $con = $p->connect();
+            $con->set_charset('utf8');
+            if($con){
+                $str = "UPDATE dondatban SET trangthai = ? WHERE idddb = ?";
+                $stmt = $con->prepare($str);
+                if ($stmt) {
+                    $stmt->bind_param("ii", $trangthai, $id);
+                    $result = $stmt->execute();
+                    $stmt->close();
+                    $p->dongketnoi($con);
+                    return $result; // Trả về true nếu thành công, false nếu lỗi
+                } else {
+                    return false;
+                }
+            } else {
+                return false; // Không thể kết nối csdl
+            }
+        }
 }
 ?>

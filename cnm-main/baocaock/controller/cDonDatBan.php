@@ -27,6 +27,18 @@
                 return null; 
             }
         }
+
+        public function capNhatTrangThaiDon($id, $trangthai) {
+            $p = new MDonDatBan(); // Khởi tạo đối tượng MDeXuat
+            $result = $p->capNhatTrangThaiDon($id, $trangthai); // Gọi phương thức updateTrangThai từ lớp MDeXuat
+    
+            // Kiểm tra kết quả trả về
+            if ($result) {
+                return true; // Thành công
+            } else {
+                return false; // Thất bại
+            }
+        }
     }
 
 ?>

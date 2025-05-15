@@ -133,6 +133,18 @@ td a:hover {
         <?php
             include_once("../../controller/cDonDatBan.php");
             $p = new CDonDatBan();
+            // XỬ LÝ CẬP NHẬT TRẠNG THÁI
+            if ($_SERVER["REQUEST_METHOD"] === "POST") {
+                if (isset($_POST["duyet"])) {
+                    $id = $_POST["idddb"];
+                    $p->capNhatTrangThaiDon($id, 1); // 1 = Đã xác nhận
+                }
+                if (isset($_POST["tuchoi"])) {
+                    $id = $_POST["idddb"];
+                    $p->capNhatTrangThaiDon($id, 2); // 2 = Đã từ chối
+                }
+            }
+
             $tblDon = $p->getAllDon(); // Gọi hàm để lấy tất cả đơn đặt bàn (hoặc tên hàm tương ứng)
             
             // Kiểm tra và hiển thị kết quả           
@@ -154,9 +166,17 @@ td a:hover {
                     </thead>
                 ";
                 while ($r = $tblDon->fetch_assoc()) {
-                    $statusText = ($r['trangthai'] == 'da_xac_nhan') ? 'Đã xác nhận' : 'Chờ xác nhận';
-                    $statusClass = ($r['trangthai'] == 'da_xac_nhan') ? 'status-working' : 'status-probation';
-                
+                    if ($r['trangthai'] == 1) {
+                        $statusText = 'Đã xác nhận';
+                        $statusClass = 'status-working';
+                    } elseif ($r['trangthai'] == 2) {
+                        $statusText = 'Đã từ chối';
+                        $statusClass = 'status-left';
+                    } else {
+                        $statusText = 'Chờ xác nhận';
+                        $statusClass = 'status-probation';
+                    }
+
                     echo "
                         <tr>
                             <td>{$r['idddb']}</td>
