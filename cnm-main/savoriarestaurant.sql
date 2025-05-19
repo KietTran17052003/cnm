@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 15, 2025 at 10:23 AM
+-- Generation Time: May 19, 2025 at 02:28 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -72,9 +72,41 @@ INSERT INTO `ban` (`idban`, `soghe`, `vitri`, `trangthai`, `id_user`, `tenkh`, `
 
 CREATE TABLE `chatbox` (
   `id_chat` int(11) NOT NULL,
-  `cauhoi` varchar(1000) NOT NULL,
-  `cautraloi` varchar(1000) NOT NULL
+  `cauhoi` varchar(1000) DEFAULT NULL,
+  `cautraloi` varchar(1000) DEFAULT NULL,
+  `id_user` int(11) DEFAULT NULL,
+  `thoigian` datetime DEFAULT NULL,
+  `id_role` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `chatbox`
+--
+
+INSERT INTO `chatbox` (`id_chat`, `cauhoi`, `cautraloi`, `id_user`, `thoigian`, `id_role`) VALUES
+(1, 'help me', NULL, 2, '2025-05-19 12:06:13', 4),
+(2, 'hi', NULL, 2, '2025-05-19 12:07:40', 4),
+(3, 'hello', NULL, 2, '2025-05-19 12:07:44', 4),
+(23, 'ádf', NULL, 5, '2025-05-19 13:22:57', 1),
+(24, 'ádf', NULL, 5, '2025-05-19 13:24:27', 1),
+(25, 'ádf', NULL, 5, '2025-05-19 13:29:13', 1),
+(26, '312312', NULL, 5, '2025-05-19 13:29:37', 1),
+(27, '231231', NULL, 5, '2025-05-19 13:30:49', 1),
+(28, '1231', NULL, 5, '2025-05-19 13:32:30', 1),
+(29, 'me m', NULL, 5, '2025-05-19 13:36:01', 1),
+(30, 'ádf', '', 5, '2025-05-19 13:42:22', 1),
+(31, '', 'test123', 5, '2025-05-19 18:44:15', 1),
+(32, '123123', '', 5, '2025-05-19 13:49:36', 1),
+(33, 'ádfasfd', '', 5, '2025-05-19 13:50:27', 1),
+(34, 'ádfas', '', 5, '2025-05-19 13:50:43', 1),
+(35, 'ádf', '', 5, '2025-05-19 14:01:56', 1),
+(36, 'mem ', '', 5, '2025-05-19 14:04:31', 1),
+(37, 'ádfsa', '', 5, '2025-05-19 14:04:50', 1),
+(38, '', 'mẹ m', 2, '2025-05-19 14:13:36', 1),
+(39, 'cc', '', 2, '2025-05-19 14:16:05', 4),
+(40, '', 'giởn mặt t hả m', 2, '2025-05-19 14:16:43', 1),
+(41, 'ê m', '', 16, '2025-05-19 14:21:37', 4),
+(42, '', 'ê cc', 16, '2025-05-19 14:27:12', 1);
 
 -- --------------------------------------------------------
 
@@ -106,20 +138,16 @@ CREATE TABLE `dondatban` (
   `email` varchar(100) DEFAULT NULL,
   `ghichu` varchar(1000) DEFAULT NULL,
   `soluong` int(11) NOT NULL,
-  `trangthai` int(11) NOT NULL,
-  `iduser` int(11) NOT NULL
+  `trangthai` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Dumping data for table `dondatban`
 --
 
-INSERT INTO `dondatban` (`idddb`, `tenkh`, `ngaydatban`, `sdt`, `email`, `ghichu`, `soluong`, `trangthai`, `iduser`) VALUES
-(1, 'Trần Cao Kiệt', '2025-05-05 22:05:00', '0364127297', 'abc@gmail.com', '123123', 1, 0, 0),
-(2, 'Trần Văn Ân', '2025-05-17 17:27:00', '0352856380', 'abc@gmail.com', 'sfsdg', 5, 0, 0),
-(3, 'Nam', '2025-05-15 15:24:00', '0864256786', 'nam123@gmail.com', '', 6, 0, 15),
-(4, 'Nam', '2025-05-15 15:24:00', '0864256786', 'nam123@gmail.com', '', 6, 0, 15),
-(5, 'Nguyễn Hạnh', '2025-05-24 15:26:00', '0837274829', 'hanh@gmail.com', '', 7, 0, 15);
+INSERT INTO `dondatban` (`idddb`, `tenkh`, `ngaydatban`, `sdt`, `email`, `ghichu`, `soluong`, `trangthai`) VALUES
+(1, 'Trần Cao Kiệt', '2025-05-05 22:05:00', '0364127297', 'abc@gmail.com', '123123', 1, 0),
+(2, 'Trần Văn Ân', '2025-05-17 17:27:00', '0352856380', 'abc@gmail.com', 'sfsdg', 5, 0);
 
 -- --------------------------------------------------------
 
@@ -235,7 +263,7 @@ INSERT INTO `nguoidung` (`id_user`, `hoten`, `gioitinh`, `email`, `sdt`, `id_rol
 (5, 'admin', 1, 'admin@admin.com', '0123456789', 1, '21232f297a57a5a743894a0e4a801fc3', 1),
 (6, 'Trần Văn Ân', 1, 'an@gmail.com', '0123456789', 1, '123456', 1),
 (14, 'kiệt trần', 1, 'abc@gmail.com', '0364127297', 4, 'e10adc3949ba59abbe56e057f20f883e', 1),
-(15, 'Quỳnh Hương', 0, 'qhuong@gmail.com', '0964628423', 4, 'e10adc3949ba59abbe56e057f20f883e', 1);
+(16, 'kiet tran', 1, '123@123.om', '123123123', 4, 'e10adc3949ba59abbe56e057f20f883e', 1);
 
 -- --------------------------------------------------------
 
@@ -344,7 +372,7 @@ ALTER TABLE `ban`
 -- AUTO_INCREMENT for table `chatbox`
 --
 ALTER TABLE `chatbox`
-  MODIFY `id_chat` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_chat` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
 
 --
 -- AUTO_INCREMENT for table `chitiethoadon`
@@ -380,7 +408,7 @@ ALTER TABLE `monan`
 -- AUTO_INCREMENT for table `nguoidung`
 --
 ALTER TABLE `nguoidung`
-  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `vaitro`
