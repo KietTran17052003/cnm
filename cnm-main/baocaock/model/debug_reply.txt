@@ -1,0 +1,21 @@
+Array
+(
+    [id_user] => 2
+    [cautraloi] => mẹ m
+)
+
+INSERT INTO chatbox SET cauhoi='', cautraloi='mẹ m', id_user='2', thoigian='2025-05-19 14:13:36', id_role=1
+Array
+(
+    [id_user] => 2
+    [cautraloi] => giởn mặt t hả m
+)
+
+INSERT INTO chatbox SET cauhoi='', cautraloi='giởn mặt t hả m', id_user='2', thoigian='2025-05-19 14:16:43', id_role=1
+Array
+(
+    [id_user] => 16
+    [cautraloi] => ê cc
+)
+
+INSERT INTO chatbox SET cauhoi='', cautraloi='ê cc', id_user='16', thoigian='2025-05-19 14:27:12', id_role=1
