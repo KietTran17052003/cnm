@@ -21,12 +21,9 @@
 
     // require __DIR__ . '/../../layout/footer.php';
     include_once("../layout/footer.php");
+    include_once('../layout/chatbox.php');
     ob_end_flush();
 ?>
-
-
-
-
 <?php
 
 

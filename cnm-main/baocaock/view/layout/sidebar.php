@@ -61,6 +61,7 @@
   <a href="index.php?page=quanly/quanlymonan"><i class="fas fa-hamburger"></i> Quản lý món ăn</a>
   <a href="index.php?page=quanly/quanlyban"><i class="fas fa-chair"></i> Quản lý bàn</a>
   <a href="index.php?page=quanly/quanlydondatban"><i class="fas fa-receipt"></i> Quản lý đơn đặt bàn</a>
+  <a href="index.php?page=quanly/quanlychatbox"><i class="fas fa-receipt"></i> Quản lý tin nhắn</a>
   <a href="#"><i class="fas fa-chart-line"></i> Thống kê</a>
   <?php
     if (isset($_SESSION["dangnhap"]) && $_SESSION["dangnhap"]) {  
