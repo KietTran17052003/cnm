@@ -42,6 +42,9 @@
         .user-item.active, .user-item:hover {
             background: #e6f0fa;
         }
+        .user-item.has-new-message {
+            background: #fffbe6 !important;
+        }
         .user-avatar {
             width: 38px; height: 38px;
             border-radius: 50%;
@@ -120,6 +123,18 @@
             font-size: 15px;
             cursor: pointer;
         }
+        .badge {
+            display: inline-block;
+            min-width: 18px;
+            padding: 2px 6px;
+            font-size: 12px;
+            background: #e74c3c;
+            color: #fff;
+            border-radius: 12px;
+            text-align: center;
+            margin-left: 8px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -159,15 +174,24 @@ function loadUserList() {
             userList.innerHTML = '';
             if (data.success && data.users.length > 0) {
                 data.users.forEach(user => {
+                    const lastMsg = user.last_message ? `<div style="font-size:13px;color:#888;">${user.last_message}</div>` : '';
+                    const badge = (user.unread_count && user.unread_count > 0)
+                        ? `<span class="badge">${user.unread_count > 9 ? '9+' : user.unread_count}</span>`
+                        : '';
                     const div = document.createElement('div');
                     div.className = 'user-item';
                     div.dataset.userid = user.id_user;
-                    div.innerHTML = `<div class="user-avatar">👤</div>
-    <div>
-        <div><b>${user.hoten || 'Khách ' + user.id_user}</b></div>
-        <div style="font-size:12px;color:#888;">${user.sdt || ''}</div>
-    </div>`;
-                    div.onclick = () => selectUser(user.id_user, user.tenkhachhang || 'Khách ' + user.id_user);
+                    div.innerHTML = `
+        <div class="user-avatar">👤</div>
+        <div style="flex:1">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+                <b>${user.hoten || 'Khách ' + user.id_user}</b>
+                ${badge}
+            </div>
+            ${lastMsg}
+        </div>
+    `;
+                    div.onclick = () => selectUser(user.id_user, user.hoten || 'Khách ' + user.id_user);
                     userList.appendChild(div);
                 });
             } else {
@@ -210,16 +234,48 @@ function loadMessages(userId) {
 function selectUser(id, name) {
     currentUserId = id;
     currentUserName = name;
-    // Đánh dấu active
     document.querySelectorAll('.user-item').forEach(item => {
         item.classList.toggle('active', item.dataset.userid == id);
     });
-    chatHeader.textContent = 'Chat với: ' + name;
+    chatHeader.textContent = name;
     chatForm.style.display = 'flex';
     loadMessages(id);
+
+    // Đánh dấu đã đọc
+    fetch('/cnm-main/baocaock/model/chatbox_mark_read.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({id_user: id})
+    }).then(() => loadUserList());
 }
 
-// Gửi tin nhắn trả lời
+// Lập kết nối WebSocket
+let ws = new WebSocket('ws://localhost:8080');
+let lastNotifiedUserId = null;
+ws.onmessage = function(event) {
+    let data = {};
+    try {
+        data = JSON.parse(event.data);
+    } catch (e) {}
+    if (currentUserId) loadMessages(currentUserId);
+    loadUserList();
+    // Hiển thị thông báo popup nếu có tin nhắn mới từ khách
+    if (Notification.permission === "granted" && data.type === 'new_message') {
+        // Không thông báo nếu chính mình gửi
+        if (data.user_id !== currentUserId) {
+            new Notification("Tin nhắn mới từ " + (data.user_name || "Khách"), {
+                body: data.message || "Bạn có tin nhắn mới!",
+                icon: "/path/to/icon.png"
+            });
+        }
+    }
+};
+// Yêu cầu quyền thông báo khi load trang
+if (window.Notification && Notification.permission !== "granted") {
+    Notification.requestPermission();
+}
+
+// Khi gửi tin nhắn, gửi qua WebSocket
 chatForm.onsubmit = function(e) {
     e.preventDefault();
     if (!currentUserId || chatInput.value.trim() === '') return;
@@ -234,6 +290,12 @@ chatForm.onsubmit = function(e) {
     .then(res => res.json())
     .then(data => {
         if (data.success) {
+            ws.send(JSON.stringify({
+                type: 'new_message',
+                user_id: currentUserId,
+                user_name: currentUserName,
+                message: chatInput.value
+            }));
             chatInput.value = '';
             loadMessages(currentUserId);
         } else {

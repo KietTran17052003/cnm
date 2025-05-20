@@ -179,46 +179,66 @@ document.getElementById('close-chat-btn').onclick = function() {
 const form = document.getElementById('chat-form');
 const input = document.getElementById('chat-input');
 const messages = document.getElementById('messages');
+
 form.onsubmit = function(e) {
     e.preventDefault();
-    if (input.value.trim() !== '') {
-        fetch('/cnm-main/baocaock/model/chatbox_add.php', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({
-                cauhoi: input.value,
-                cautraloi: ''
-            })
-        });
-        const msg = document.createElement('div');
-        msg.textContent = "Bạn: " + input.value;
-        msg.style.textAlign = "right";
-        messages.appendChild(msg);
-        messages.scrollTop = messages.scrollHeight;
-        input.value = '';
-    }
+    let msg = input.value.trim();
+    if (!msg) return;
+    fetch('/cnm-main/baocaock/model/chatbox_add.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            cauhoi: msg,
+            cautraloi: ''
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            input.value = '';
+            loadMessages();
+            ws.send(JSON.stringify({
+                type: 'new_message',
+                user_id: currentUserId,
+                user_name: currentUserName,
+                message: chatInput.value
+            }));
+        }
+    });
 };
 document.getElementById('send-btn').onclick = function() {
     form.onsubmit(new Event('submit'));
 };
 
+// Hàm load lại lịch sử chat
+function loadMessages() {
+    fetch('/cnm-main/baocaock/model/chatbox_history.php')
+        .then(res => res.json())
+        .then(data => {
+            messages.innerHTML = '';
+            if (data.success) {
+                data.messages.forEach(msg => {
+                    const div = document.createElement('div');
+                    if (msg.id_role == 4) {
+                        div.innerHTML = '<span style="font-size:18px;">👤</span> ' + msg.cauhoi;
+                        div.style.textAlign = "right";
+                    } else {
+                        div.innerHTML = '<span style="font-size:18px;">💼</span> ' + msg.cautraloi;
+                        div.style.textAlign = "left";
+                    }
+                    messages.appendChild(div);
+                });
+                messages.scrollTop = messages.scrollHeight;
+            }
+        });
+}
+
 // Lấy lịch sử chat khi load trang
-fetch('/cnm-main/baocaock/model/chatbox_history.php')
-    .then(res => res.json())
-    .then(data => {
-        if (data.success) {
-            data.messages.forEach(msg => {
-                const div = document.createElement('div');
-                if (msg.id_role == 4) {
-                    div.innerHTML = '<span style="font-size:18px;">👤</span> ' + msg.cauhoi;
-                    div.style.textAlign = "right";
-                } else {
-                    div.innerHTML = '<span style="font-size:18px;">💼</span> ' + msg.cautraloi;
-                    div.style.textAlign = "left";
-                }
-                messages.appendChild(div);
-            });
-            messages.scrollTop = messages.scrollHeight;
-        }
-    });
+loadMessages();
+
+// WebSocket nhận tin nhắn realtime
+let ws = new WebSocket('ws://localhost:8080');
+ws.onmessage = function(event) {
+    loadMessages();
+};
 </script>

@@ -2,11 +2,11 @@ Array
 (
     [dangnhap] => Array
         (
-            [id_user] => 16
-            [hoten] => kiet tran
+            [id_user] => 2
+            [hoten] => trancaokiet
             [gioitinh] => 1
-            [email] => 123@123.om
-            [sdt] => 123123123
+            [email] => trancaokiet@gmail.com
+            [sdt] => 0123456789
             [id_role] => 4
             [trangthai] => 1
         )

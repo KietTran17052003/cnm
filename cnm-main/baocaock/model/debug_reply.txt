@@ -19,3 +19,136 @@ Array
 )
 
 INSERT INTO chatbox SET cauhoi='', cautraloi='ê cc', id_user='16', thoigian='2025-05-19 14:27:12', id_role=1
+Array
+(
+    [id_user] => 2
+    [cautraloi] => alo
+)
+
+INSERT INTO chatbox SET cauhoi='', cautraloi='alo', id_user='2', thoigian='2025-05-20 12:48:34', id_role=1
+Array
+(
+    [id_user] => 2
+    [cautraloi] => alo
+)
+
+INSERT INTO chatbox SET cauhoi='', cautraloi='alo', id_user='2', thoigian='2025-05-20 12:49:14', id_role=1
+Array
+(
+    [id_user] => 2
+    [cautraloi] => alo
+)
+
+INSERT INTO chatbox SET cauhoi='', cautraloi='alo', id_user='2', thoigian='2025-05-20 12:56:04', id_role=1
+Array
+(
+    [id_user] => 2
+    [cautraloi] => alo
+)
+
+INSERT INTO chatbox SET cauhoi='', cautraloi='alo', id_user='2', thoigian='2025-05-20 13:00:51', id_role=1
+Array
+(
+    [id_user] => 2
+    [cautraloi] => alo
+)
+
+INSERT INTO chatbox SET cauhoi='', cautraloi='alo', id_user='2', thoigian='2025-05-20 13:08:53', id_role=1
+Array
+(
+    [id_user] => 2
+    [cautraloi] => alo
+)
+
+INSERT INTO chatbox SET cauhoi='', cautraloi='alo', id_user='2', thoigian='2025-05-20 13:09:02', id_role=1
+Array
+(
+    [id_user] => 2
+    [cautraloi] => alo
+)
+
+INSERT INTO chatbox SET cauhoi='', cautraloi='alo', id_user='2', thoigian='2025-05-20 13:09:12', id_role=1
+Array
+(
+    [id_user] => 2
+    [cautraloi] => cai gi
+)
+
+INSERT INTO chatbox SET cauhoi='', cautraloi='cai gi', id_user='2', thoigian='2025-05-20 13:10:10', id_role=1
+Array
+(
+    [id_user] => 2
+    [cautraloi] => lo
+)
+
+INSERT INTO chatbox SET cauhoi='', cautraloi='lo', id_user='2', thoigian='2025-05-20 13:10:30', id_role=1
+Array
+(
+    [id_user] => 2
+    [cautraloi] => lo
+)
+
+INSERT INTO chatbox SET cauhoi='', cautraloi='lo', id_user='2', thoigian='2025-05-20 13:10:31', id_role=1
+Array
+(
+    [id_user] => 2
+    [cautraloi] => alo
+)
+
+INSERT INTO chatbox SET cauhoi='', cautraloi='alo', id_user='2', thoigian='2025-05-20 13:13:17', id_role=1
+Array
+(
+    [id_user] => 2
+    [cautraloi] => lo
+)
+
+INSERT INTO chatbox SET cauhoi='', cautraloi='lo', id_user='2', thoigian='2025-05-20 13:17:50', id_role=1
+Array
+(
+    [id_user] => 2
+    [cautraloi] => lo
+)
+
+INSERT INTO chatbox SET cauhoi='', cautraloi='lo', id_user='2', thoigian='2025-05-20 13:29:50', id_role=1
+Array
+(
+    [id_user] => 2
+    [cautraloi] => ha
+)
+
+INSERT INTO chatbox SET cauhoi='', cautraloi='ha', id_user='2', thoigian='2025-05-20 13:29:57', id_role=1
+Array
+(
+    [id_user] => 14
+    [cautraloi] => a
+)
+
+INSERT INTO chatbox SET cauhoi='', cautraloi='a', id_user='14', thoigian='2025-05-20 13:30:07', id_role=1
+Array
+(
+    [id_user] => 2
+    [cautraloi] => a
+)
+
+INSERT INTO chatbox SET cauhoi='', cautraloi='a', id_user='2', thoigian='2025-05-20 13:30:10', id_role=1
+Array
+(
+    [id_user] => 2
+    [cautraloi] => mẹ gì
+)
+
+INSERT INTO chatbox SET cauhoi='', cautraloi='mẹ gì', id_user='2', thoigian='2025-05-20 13:34:51', id_role=1
+Array
+(
+    [id_user] => 2
+    [cautraloi] => a
+)
+
+INSERT INTO chatbox SET cauhoi='', cautraloi='a', id_user='2', thoigian='2025-05-20 13:35:04', id_role=1
+Array
+(
+    [id_user] => 2
+    [cautraloi] => gi
+)
+
+INSERT INTO chatbox SET cauhoi='', cautraloi='gi', id_user='2', thoigian='2025-05-20 13:36:06', id_role=1
